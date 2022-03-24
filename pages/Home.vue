@@ -1,51 +1,12 @@
 <template>
   <div id="home">
-    <SfHero class="hero">
-      <SfHeroItem
-        v-for="(hero, i) in heroes"
-        :key="i"
-        :title="hero.title"
-        :subtitle="hero.subtitle"
-        :button-text="hero.buttonText"
-        :background="hero.background"
-        :image="hero.image"
-        :class="hero.className"
-      />
-    </SfHero>
-    <LazyHydrate when-visible>
-      <SfBannerGrid :banner-grid="1" class="banner-grid">
-        <template v-for="item in banners" #[item.slot]>
-          <SfBanner
-            :key="item.slot"
-            :title="item.title"
-            :subtitle="item.subtitle"
-            :description="item.description"
-            :button-text="item.buttonText"
-            :image="item.image"
-            :class="item.class"
-          />
-        </template>
-      </SfBannerGrid>
-    </LazyHydrate>
+    <render-content :content="body" />
     <LazyHydrate when-visible>
       <RelatedProducts
         :products="products"
         :loading="productsLoading"
         title="Match it with"
       />
-    </LazyHydrate>
-
-    <LazyHydrate when-visible>
-      <SfCallToAction
-        title="Subscribe to Newsletters"
-        button-text="Subscribe"
-        description="Be aware of upcoming sales and events. Receive gifts and special offers!"
-        image="https://cdn.shopify.com/s/files/1/0407/1902/4288/files/newsletter_1240x202.jpg?v=1616496568"
-        class="call-to-action"
-      />
-    </LazyHydrate>
-    <LazyHydrate when-visible>
-      <MobileStoreBanner />
     </LazyHydrate>
   </div>
 </template>
@@ -69,11 +30,16 @@ import {
 } from '@vue-storefront/shopify';
 import {
   computed,
-  onBeforeMount
+  onBeforeMount,
+  ref, 
+  useContext
 } from '@nuxtjs/composition-api';
+import { useContent } from '@vue-storefront/storyblok';
+import { onSSR } from '@vue-storefront/core';
 import LazyHydrate from 'vue-lazy-hydration';
 import MobileStoreBanner from '~/components/MobileStoreBanner.vue';
 import RelatedProducts from '~/components/RelatedProducts.vue';
+import RenderContent from '~/cms/RenderContent.vue';
 
 export default {
   name: 'Home',
@@ -90,7 +56,8 @@ export default {
     SfArrow,
     SfButton,
     MobileStoreBanner,
-    LazyHydrate
+    LazyHydrate,
+    RenderContent
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup(contect) {
@@ -100,10 +67,16 @@ export default {
       loading: productsLoading
     } = useProduct('relatedProducts');
     const { cart, addItem: addToCart, isInCart } = useCart();
-
+    const {search, content } = useContent('home');
+    const body = computed(() => content.value.body);
     onBeforeMount(async () => {
       await productsSearch({ limit: 8 });
     });
+
+    onSSR(async() => {
+      await search({ url: `home?cv=${Math.floor(Date.now()/1000)}`});
+    })
+
     return {
       products: computed(() =>
         productGetters.getFiltered(relatedProducts.value, { master: true })
@@ -112,7 +85,8 @@ export default {
       productsLoading,
       productGetters,
       addToCart,
-      isInCart
+      isInCart,
+      body
     };
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
