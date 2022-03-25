@@ -1,4 +1,4 @@
-# Vue Storefron Shopify Template
+# Vue Storefront, Shopify, Storyblok integration Demo
 
 Vue Storefront 2 template for Shopify.
 
@@ -9,6 +9,7 @@ Vue Storefront 2 template for Shopify.
 ```bash
 SHOPIFY_STOREFRONT_TOKEN=<SHOPIFY_ACCESS_TOKEN>
 SHOPIFY_DOMAIN=<SHOPIFY_DOMAIN> # example: vsf-next-pwa.myshopify.com
+STORYBLOK_TOKEN=<STORYBLOK_TOKEN>
 ```
 
 2. Run the project
