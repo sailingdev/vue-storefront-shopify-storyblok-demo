@@ -3,7 +3,7 @@ module.exports = {
     sb: {
       location: '@vue-storefront/storyblok/server',
       configuration: {
-        token: 'TrKX7tsa8Xr9S8Mf6QxMhQtt',
+        token: process.env.STORYBLOK_TOKEN,
         cacheProvider: 'memory',
       },
     },
