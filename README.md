@@ -1,6 +1,6 @@
 # Vue Storefront, Shopify, Storyblok integration Demo
 
-Vue Storefront 2 template for Shopify.
+Vue Storefront 2 Demo integrated with Shopify and Storyblok.
 
 ## Setup
 
